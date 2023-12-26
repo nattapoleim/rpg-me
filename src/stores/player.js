@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useStatStore = defineStore('stat', {
+export const usePlayerStore = defineStore('player', {
    state() {
       return {
          name: '',
@@ -9,7 +9,7 @@ export const useStatStore = defineStore('stat', {
             vit: { title: 'VIT', value: 5 },
             int: { title: 'INT', value: 5 },
          },
-         statPoints: 3,
+         statPoints: 5,
          level: 1,
       }
    },

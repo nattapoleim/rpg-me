@@ -4,25 +4,25 @@
 
    import HealthBar from '@/components/HealthBar.vue';
 
-   import { useMonsterStore } from '@/stores/monsterStats';
-   import { useStatStore } from '@/stores/characterStats';
-   import { useFightStore } from '@/stores/fightStore'
+   import { useMonsterStore } from '@/stores/monster';
+   import { usePlayerStore } from '@/stores/player';
+   import { useFightStore } from '@/stores/fight'
 
    const router = useRouter()
 
    const monsterStore = useMonsterStore()
-   const statStore = useStatStore()
+   const playerStore = usePlayerStore()
    const fightStore = useFightStore()
 
    const monsterHp = ref(monsterStore.baseStats.hp.value)
-   const playerHp = ref(statStore.baseStats.hp.value)
-   const playerMp = ref(statStore.baseStats.mp.value)
+   const playerHp = ref(playerStore.baseStats.hp.value)
+   const playerMp = ref(playerStore.baseStats.mp.value)
    const specialCooldown = ref(0)
    const success = ref(null)
    const gameover = ref(null)
 
    onMounted(() => {
-      if (statStore.name === '') {
+      if (playerStore.name === '') {
          router.push({ name: 'home' })
       }
 
@@ -31,14 +31,14 @@
       success.value = null
       gameover.value = null
       monsterHp.value = monsterStore.baseStats.hp.value
-      playerHp.value = statStore.baseStats.hp.value
+      playerHp.value = playerStore.baseStats.hp.value
    })
 
    watch(
       [playerHp, monsterHp], ([pValue, mValue]) => {
          if (mValue <= 0) {
             monsterHp.value = 0
-            statStore.levelUp()
+            playerStore.levelUp()
             monsterStore.levelUp()
             success.value = true
             monsterHp.value = 1
@@ -51,7 +51,7 @@
    )
 
    const playerAttack = () => {
-      const pDamage = statStore.playerDamage()
+      const pDamage = playerStore.playerDamage()
       monsterHp.value -= pDamage
       fightStore.addLog('player', 'attack', pDamage)
 
@@ -63,7 +63,7 @@
    }
 
    const playerSpecialAttack = () => {
-      const pDamage = statStore.playerSpecialDamage()
+      const pDamage = playerStore.playerSpecialDamage()
       monsterHp.value -= pDamage
       fightStore.addLog('player', 'special attack', pDamage)
       specialCooldown.value = 3
@@ -71,10 +71,10 @@
    }
 
    const playerHeal = () => {
-      const pHeal = statStore.healValue()
+      const pHeal = playerStore.healValue()
       if (playerMp.value > 10) {
-         if (playerHp.value >= statStore.baseStats.hp.value) {
-            playerHp.value = statStore.baseStats.hp.value
+         if (playerHp.value >= playerStore.baseStats.hp.value) {
+            playerHp.value = playerStore.baseStats.hp.value
          } else {
             playerHp.value += pHeal
          }
@@ -101,9 +101,10 @@
 
    const resetgame = () => {
       monsterStore.level = 1
-      statStore.status.str.value = 5
-      statStore.status.vit.value = 5
-      statStore.status.int.value = 5
+      playerStore.status.str.value = 5
+      playerStore.status.vit.value = 5
+      playerStore.status.int.value = 5
+      playerStore.statPoints = 5
    }
 
 
@@ -136,13 +137,13 @@
       </div>
    </div>
 
-   <section class="container box h-3/4">
+   <section class="container max-w-6xl max-h-[600px] h-[600px] box">
       <div class="flex flex-col h-full">
          <div class="flex justify-between w-full h-32 gap-5">
             <div class="flex flex-col w-1/2 gap-2">
                <div class="flex items-end justify-between w-full">
-                  <span class="text-sm text-white">Level {{ statStore.level }}</span>
-                  <p class="text-xl text-green-500">{{ statStore.name }}</p>
+                  <span class="text-sm text-white">Level {{ playerStore.level }}</span>
+                  <p class="text-xl text-green-500">{{ playerStore.name }}</p>
                </div>
                <HealthBar
                   :hp="playerHp"
@@ -158,23 +159,23 @@
             </div>
          </div>
 
-         <div class="flex flex-col items-center justify-center w-2/3 gap-5 mx-auto mt-5 lg:flex-row h-1/6">
+         <div class="flex items-center justify-center w-2/3 gap-5 mx-auto mt-5 h-1/6">
             <button
-               class="w-full lg:w-44 btn btn-lg btn-outline btn-primary"
+               class="w-20 lg:w-44 btn btn-lg btn-outline btn-primary"
                @click="playerAttack"
             >ATTACK</button>
             <button
                :disabled="specialCooldown > 0"
-               class="w-full lg:w-44 btn btn-lg btn-outline btn-secondary"
+               class="w-20 lg:w-44 btn btn-lg btn-outline btn-secondary"
                @click="playerSpecialAttack"
             >SPECIAL ATTACK</button>
             <button
                :disabled="playerMp < 10"
-               class="w-full lg:w-44 btn btn-lg btn-outline btn-info"
+               class="w-20 lg:w-44 btn btn-lg btn-outline btn-info"
                @click="playerHeal"
             >HEAL</button>
             <button
-               class="w-full lg:w-44 btn btn-lg btn-outline btn-warning"
+               class="w-20 lg:w-44 btn btn-lg btn-outline btn-warning"
                @click="giveup"
             >GIVE UP</button>
          </div>

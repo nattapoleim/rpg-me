@@ -5,10 +5,10 @@
    import CharacterStatus from '@/components/CharacterStatus/CharacterStatus.vue';
    import Hero from '@/assets/Hero.png'
 
-   import { useStatStore } from '../stores/characterStats'
+   import { usePlayerStore } from '../stores/player'
 
    const router = useRouter()
-   const statStore = useStatStore()
+   const statStore = usePlayerStore()
 
    onMounted(() => {
       if (statStore.name === '') {
@@ -18,7 +18,7 @@
 </script>
 
 <template>
-   <section class="container h-3/4 box lg:h-2/4">
+   <section class="container max-w-6xl max-h-[600px] h-[600px] box">
       <div class="flex flex-col items-center justify-center w-full h-full gap-5 p-10 lg:flex-row">
          <div class="hidden w-1/3 h-full box lg:block">
             <img

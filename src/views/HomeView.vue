@@ -4,16 +4,16 @@
 
    import ForestImg from '@/assets/forest-home.png'
 
-   import { useStatStore } from '../stores/characterStats'
+   import { usePlayerStore } from '../stores/player'
 
-   const statStore = useStatStore()
+   const playerStore = usePlayerStore()
    const router = useRouter()
 
    const enteredName = ref('')
 
    const startGame = () => {
       if (enteredName.value) {
-         statStore.name = enteredName.value
+         playerStore.name = enteredName.value
          router.push({ name: 'character' })
       }
 
@@ -22,7 +22,7 @@
 </script>
 
 <template>
-   <main class="container box h-3/4 lg:h-2/4">
+   <main class="container max-w-6xl max-h-[600px] box lg:h-2/4">
       <div class="flex flex-col items-center justify-between h-full gap-10 pt-10">
          <img
             class="object-cover w-full h-3/5 card"

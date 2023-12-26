@@ -9,7 +9,7 @@
       <div
          v-for="base in props.baseStats"
          :key="base.title"
-         class="grid grid-cols-3"
+         class="grid grid-cols-2"
       >
          <p><strong :class="base.style">{{ base.title }}</strong></p>
          <p>{{ base.title === 'ATK' ? `${base.min} - ${base.max}` : base.value }}</p>
